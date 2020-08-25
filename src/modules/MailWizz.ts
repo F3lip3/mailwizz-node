@@ -15,4 +15,4 @@ class MailWizz implements IMailWizz {
   }
 }
 
-export default new MailWizz();
+export default MailWizz;

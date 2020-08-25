@@ -1,13 +1,5 @@
-import 'dotenv/config';
+import MailWizzInstance from '@modules/MailWizz';
 
-import MailWizz from '@modules/MailWizz';
+const MailWizz = new MailWizzInstance();
 
-const mailwizz = MailWizz.create({
-  baseUrl: process.env.MAILWIZZ_BASEURL || '',
-  publicKey: process.env.MAILWIZZ_PUBLIC_KEY || '',
-  secret: process.env.MAILWIZZ_SECRET || ''
-});
-
-mailwizz.lists.all().then(lists => {
-  console.info('mailwizz lists:', lists);
-});
+export { MailWizz };
