@@ -4,14 +4,27 @@
   "description": "MailWizz node sdk implementation",
   "author": "Felipe Humberto Teixeira",
   "license": "MIT",
+  "keywords": [
+    "MailWizz"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/F3lip3/mailwizz-node"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "babel src --extensions \".js,.ts\" --out-dir dist",
+    "test": "jest --passWithNoTests",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist",
+    "format": "prettier --write \"**/*.ts\" \"**/*.js\"",
+    "lint": "eslint",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test && yarn lint",
+    "preversion": "yarn lint",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --inspect --transpile-only --ignore node_modules src/index.ts",
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
-    "test": "jest"
+    "start": "ts-node -r tsconfig-paths/register src/index.ts"
   },
   "husky": {
     "hooks": {
@@ -36,9 +49,12 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-import-helpers": "^1.1.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.2.5",
+    "jest": "^26.4.2",
     "prettier": "^2.1.0",
+    "ts-jest": "^26.2.0",
     "ts-node-dev": "^1.0.0-pre.60",
     "tsconfig-paths": "^3.9.0",
     "typescript": "3.9.3"

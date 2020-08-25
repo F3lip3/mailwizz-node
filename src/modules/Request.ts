@@ -1,11 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
+import { sign } from 'crypto';
 import querystring from 'querystring';
 import { URL, URLSearchParams } from 'url';
 
-import IMailWizzRequest from '@models/IMailWizzRequest';
 import IMailWizzConfig from '@config/mailwizz';
+import IMailWizzRequest from '@models/IMailWizzRequest';
 import encrypt from '@utils/encrypt';
-import { sign } from 'crypto';
 
 type MailWizzMethod = 'DELETE' | 'GET' | 'POST' | 'PUT';
 
@@ -15,9 +15,13 @@ interface IDictionary {
 
 export default class Request implements IMailWizzRequest {
   private client: AxiosInstance;
+
   private data: any;
+
   private defaultHeaders: IDictionary;
+
   private method: MailWizzMethod;
+
   private url: string;
 
   constructor(private config: IMailWizzConfig) {
@@ -64,9 +68,7 @@ export default class Request implements IMailWizzRequest {
   private signIn(): string {
     const fullUrl = `${this.config.baseUrl}/${this.url}`;
     const separator = fullUrl.includes('?') ? '&' : '?';
-    const params = encrypt.ksort(
-      Object.assign({}, this.defaultHeaders, this.data)
-    );
+    const params = encrypt.ksort({ ...this.defaultHeaders, ...this.data });
 
     const serializedParams = encrypt.serialize(params);
     const signature = `${this.method} ${fullUrl}${separator}${serializedParams}`;

@@ -1,5 +1,5 @@
-import IMailWizzList from '@models/IMailWizzList';
 import IMailWizzListInstance from '@entities/IMailWizzListInstance';
+import IMailWizzList from '@models/IMailWizzList';
 import IMailWizzRequest from '@models/IMailWizzRequest';
 
 export default class List implements IMailWizzList {

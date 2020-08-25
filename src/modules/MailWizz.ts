@@ -1,6 +1,6 @@
-import IMailWizz from '@models/IMailWizz';
 import IMailWizzConfig from '@config/mailwizz';
 import IMailWizzInstance from '@entities/IMailWizzInstance';
+import IMailWizz from '@models/IMailWizz';
 import List from '@modules/List';
 import Request from '@modules/Request';
 
