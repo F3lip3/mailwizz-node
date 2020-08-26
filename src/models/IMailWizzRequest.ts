@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default interface IMailWizzRequest {
   get<T>(url: string): Promise<T>;
   delete<T>(url: string): Promise<T>;

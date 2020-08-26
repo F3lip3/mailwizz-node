@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance } from 'axios';
-import { sign } from 'crypto';
-import querystring from 'querystring';
-import { URL, URLSearchParams } from 'url';
 
 import IMailWizzConfig from '@config/mailwizz';
 import IMailWizzRequest from '@models/IMailWizzRequest';
@@ -52,16 +51,19 @@ export default class Request implements IMailWizzRequest {
   }
 
   public async delete<T>(url: string): Promise<T> {
+    this.url = url;
     throw new Error('Method not implemented.');
   }
 
   public async post<T>(url: string, data?: any): Promise<T> {
     this.data = data;
+    this.url = url;
     throw new Error('Method not implemented.');
   }
 
   public async put<T>(url: string, data?: any): Promise<T> {
     this.data = data;
+    this.url = url;
     throw new Error('Method not implemented.');
   }
 

@@ -1,12 +1,13 @@
 import { createHmac } from 'crypto';
 
 interface IDictionary {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
 class Encrypt {
   public base64Encode(content: string): string {
-    return new Buffer(content).toString('base64');
+    return Buffer.from(content).toString('base64');
   }
 
   public hexEncode(key: string, content: string): string {
@@ -25,8 +26,9 @@ class Encrypt {
 
   public serialize(obj: IDictionary, prefix?: string | undefined): string {
     const str = [];
+    // eslint-disable-next-line no-restricted-syntax
     for (const prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
+      if (Object.prototype.hasOwnProperty.call(obj, prop)) {
         const key = prefix ? `${prefix}[${prop}]` : prop;
         const value = obj[prop];
         str.push(
