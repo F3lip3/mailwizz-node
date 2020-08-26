@@ -9,13 +9,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/F3lip3/mailwizz-node"
+    "url": "git+https://github.com/F3lip3/mailwizz-node.git"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "typings/index.d.ts",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "build": "babel src --extensions \".js,.ts\" --out-dir dist",
+    "build": "babel src --extensions \".ts\" --out-dir dist && tsc --emitDeclarationOnly",
     "format": "prettier --write \"**/*.ts\" \"**/*.js\"",
     "lint": "eslint",
     "prepare": "yarn build",
