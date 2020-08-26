@@ -26,9 +26,7 @@
     "prepublishOnly": "yarn build && yarn test && yarn lint",
     "preversion": "yarn lint",
     "version": "yarn format && git add -A src",
-    "postversion": "git push && git push --tags",
-    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --inspect --transpile-only --ignore node_modules src/index.ts",
-    "start": "ts-node -r tsconfig-paths/register src/index.ts"
+    "postversion": "git push && git push --tags"
   },
   "husky": {
     "hooks": {

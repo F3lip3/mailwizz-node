@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance } from 'axios';
 
-import IMailWizzConfig from '@config/mailwizz';
-import IMailWizzRequest from '@models/IMailWizzRequest';
+import IConfig from '@config/mailwizz';
 import encrypt from '@utils/encrypt';
+
+import IRequest from './models/IRequest';
 
 type MailWizzMethod = 'DELETE' | 'GET' | 'POST' | 'PUT';
 
@@ -12,7 +13,7 @@ interface IDictionary {
   [key: string]: string | number;
 }
 
-export default class Request implements IMailWizzRequest {
+export default class Request implements IRequest {
   private client: AxiosInstance;
 
   private data: any;
@@ -23,7 +24,7 @@ export default class Request implements IMailWizzRequest {
 
   private url: string;
 
-  constructor(private config: IMailWizzConfig) {
+  constructor(private config: IConfig) {
     this.defaultHeaders = {
       'X-MW-PUBLIC-KEY': config.publicKey,
       'X-MW-TIMESTAMP': parseInt((new Date().valueOf() / 1000).toString(), 10),
