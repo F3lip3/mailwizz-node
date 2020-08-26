@@ -1,4 +1,4 @@
-export default interface IMailWizzConfig {
+export default interface IConfig {
   baseUrl: string;
   publicKey: string;
   secret: string;

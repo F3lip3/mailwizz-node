@@ -1,6 +1,8 @@
-export default interface IMailWizzListInstance {
+export default interface IList {
   general: {
+    list_uid: string;
     name: string;
+    display_name: string;
     description: string;
     opt_in: 'single' | 'double';
   };
@@ -10,11 +12,11 @@ export default interface IMailWizzListInstance {
     reply_to: string;
     subject: string;
   };
-  notifications?: {
-    subscribe?: boolean;
-    unsubscribe?: boolean;
-    subscribe_to?: string;
-    unsubscribe_to?: string;
+  notifications: {
+    subscribe: 'yes' | 'no';
+    unsubscribe: 'yes' | 'no';
+    subscribe_to: string;
+    unsubscribe_to: string;
   };
   company?: {
     name?: string;
