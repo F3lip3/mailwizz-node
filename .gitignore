@@ -1,11 +1,27 @@
+# IDE
 .idea/
 .vscode/
+
+# Mac files
+.DS_Store
+
+# Coverage reports
 coverage/
+
+# Dependencies
 node_modules/
+
+# Library
 dist/
 typings/
+
+# Mist
 temp/
 
+# Environment
 .env
-yarn.lock
 
+# Yarn
+yarn.lock
+yarn-error.log
+.yarn-integrity

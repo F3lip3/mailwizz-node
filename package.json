@@ -1,8 +1,8 @@
 {
   "name": "mailwizz-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MailWizz node sdk implementation",
-  "author": "Felipe Humberto Teixeira",
+  "author": "Felipe Humberto Teixeira <felipe@dinfo.com.br>",
   "license": "MIT",
   "keywords": [
     "MailWizz"
@@ -13,6 +13,10 @@
   },
   "main": "dist/index.js",
   "types": "typings/index.d.ts",
+  "files": [
+    "dist",
+    "typings"
+  ],
   "scripts": {
     "test": "jest --passWithNoTests",
     "build": "babel src --extensions \".ts\" --out-dir dist && tsc --emitDeclarationOnly",
