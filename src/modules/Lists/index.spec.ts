@@ -15,10 +15,26 @@ describe('Lists', () => {
 
   describe('all', () => {
     it('should be able to get all mailwizz lists', async () => {
-      const lists = await list.all();
+      const result = await list.all();
 
-      expect(lists).toHaveProperty('status');
-      expect(lists.status).toBe('success');
+      expect(result).toHaveProperty('status');
+      expect(result.status).toBe('success');
+    });
+  });
+
+  describe('get', () => {
+    it('should be able to get a list by id', async () => {
+      const result = await list.get('pa828dzfp9f0f');
+
+      expect(result).toHaveProperty('status');
+      expect(result.data).toHaveProperty('record');
+    });
+
+    it('should return not found when a list does not exists', async () => {
+      const result = await list.get('teste');
+
+      expect(result).toHaveProperty('status');
+      expect(result.status).toBe('not_found');
     });
   });
 });
