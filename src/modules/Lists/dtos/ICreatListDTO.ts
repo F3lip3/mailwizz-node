@@ -3,6 +3,7 @@ export default interface ICreateListDTO {
     name: string;
     description: string;
     opt_in: 'single' | 'double';
+    opt_out?: 'single' | 'double';
   };
   defaults: {
     from_name: string;
@@ -25,5 +26,7 @@ export default interface ICreateListDTO {
     zone_name?: string;
     city?: string;
     zip_code?: string;
+    phone?: string;
+    website?: string;
   };
 }

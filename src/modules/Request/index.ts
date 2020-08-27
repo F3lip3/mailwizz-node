@@ -52,20 +52,46 @@ export default class Request implements IRequest {
   }
 
   public async delete<T>(url: string): Promise<T> {
+    this.method = 'DELETE';
     this.url = url;
     throw new Error('Method not implemented.');
   }
 
   public async post<T>(url: string, data?: any): Promise<T> {
+    this.method = 'POST';
     this.data = data;
     this.url = url;
-    throw new Error('Method not implemented.');
+
+    const encodedData = this.formUrlEncoded(data);
+    const response = await this.client.post<T>(url, encodedData, {
+      headers: {
+        'X-MW-SIGNATURE': this.signIn(),
+        'X-HTTP-Method-Override': this.method,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    return response.data;
   }
 
   public async put<T>(url: string, data?: any): Promise<T> {
+    this.method = 'PUT';
     this.data = data;
     this.url = url;
-    throw new Error('Method not implemented.');
+
+    const encodedData = this.formUrlEncoded(data);
+    const response = await this.client.put<T>(url, encodedData, {
+      headers: {
+        'X-MW-SIGNATURE': this.signIn(),
+        'X-HTTP-Method-Override': this.method,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    console.info('RESPONSE:', response);
+    console.info('RESPONSE DATA:', response.data);
+
+    return response.data;
   }
 
   private signIn(): string {
@@ -78,5 +104,12 @@ export default class Request implements IRequest {
     const hash = encrypt.hexEncode(this.config.secret, signature);
 
     return hash;
+  }
+
+  private formUrlEncoded(data: any): string {
+    const params = encrypt.ksort({ ...data });
+    const serializedParams = encrypt.serialize(params);
+
+    return serializedParams;
   }
 }
