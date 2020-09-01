@@ -1,10 +1,4 @@
-interface IDictionary {
-  [key: string]: string;
-}
-
-interface IMailWizzGenericError {
-  [key: string]: string | IDictionary;
-}
+import IMailWizzGenericError from './IMailWizzGenericError';
 
 export default interface IMailWizzResponse<T> {
   status: string;

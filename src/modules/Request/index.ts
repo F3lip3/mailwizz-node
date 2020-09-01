@@ -41,12 +41,8 @@ export default class Request implements IRequest {
     this.method = 'GET';
     this.url = url;
 
-    const response = await this.client.get<T>(url, {
-      headers: {
-        'X-MW-SIGNATURE': this.signIn(),
-        'X-HTTP-Method-Override': this.method
-      }
-    });
+    const headers = { 'X-MW-SIGNATURE': this.signIn() };
+    const response = await this.client.get<T>(url, { headers });
 
     return response.data;
   }
@@ -54,7 +50,15 @@ export default class Request implements IRequest {
   public async delete<T>(url: string): Promise<T> {
     this.method = 'DELETE';
     this.url = url;
-    throw new Error('Method not implemented.');
+
+    const headers = {
+      'X-MW-SIGNATURE': this.signIn(),
+      'X-HTTP-Method-Override': this.method
+    };
+
+    const response = await this.client.delete<T>(url, { headers });
+
+    return response.data;
   }
 
   public async post<T>(url: string, data?: any): Promise<T> {
@@ -62,14 +66,13 @@ export default class Request implements IRequest {
     this.data = data;
     this.url = url;
 
+    const headers = {
+      'X-MW-SIGNATURE': this.signIn(),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
     const encodedData = this.formUrlEncoded(data);
-    const response = await this.client.post<T>(url, encodedData, {
-      headers: {
-        'X-MW-SIGNATURE': this.signIn(),
-        'X-HTTP-Method-Override': this.method,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
+    const response = await this.client.post<T>(url, encodedData, { headers });
 
     return response.data;
   }
@@ -79,17 +82,14 @@ export default class Request implements IRequest {
     this.data = data;
     this.url = url;
 
-    const encodedData = this.formUrlEncoded(data);
-    const response = await this.client.put<T>(url, encodedData, {
-      headers: {
-        'X-MW-SIGNATURE': this.signIn(),
-        'X-HTTP-Method-Override': this.method,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
+    const headers = {
+      'X-MW-SIGNATURE': this.signIn(),
+      'X-HTTP-Method-Override': this.method,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
 
-    console.info('RESPONSE:', response);
-    console.info('RESPONSE DATA:', response.data);
+    const encodedData = this.formUrlEncoded(data);
+    const response = await this.client.put<T>(url, encodedData, { headers });
 
     return response.data;
   }
@@ -102,6 +102,8 @@ export default class Request implements IRequest {
     const serializedParams = encrypt.serialize(params);
     const signature = `${this.method} ${fullUrl}${separator}${serializedParams}`;
     const hash = encrypt.hexEncode(this.config.secret, signature);
+
+    // console.info('sign in signature:', signature);
 
     return hash;
   }

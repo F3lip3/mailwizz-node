@@ -1,3 +1,4 @@
+import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
 import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
 import IRequest from '@modules/Request/models/IRequest';
 import errorHandler from '@utils/errorHandler';
@@ -24,7 +25,18 @@ export default class Lists implements ILists {
 
       return result;
     } catch (err) {
-      return errorHandler.handleException<IList>(err);
+      return errorHandler.handleException(err);
+    }
+  }
+
+  public async delete(listId: string): Promise<IMailWizzEmptyResponse> {
+    try {
+      const result = await this.client.delete<IMailWizzEmptyResponse>(
+        `lists/${listId}`
+      );
+      return result;
+    } catch (err) {
+      return errorHandler.handleException(err);
     }
   }
 
@@ -36,7 +48,7 @@ export default class Lists implements ILists {
 
       return list;
     } catch (err) {
-      return errorHandler.handleException<IList>(err);
+      return errorHandler.handleException(err);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
+import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
 
 class ErrorHandler {
   private formatStatus(statusText: string | undefined): string {
@@ -7,7 +7,7 @@ class ErrorHandler {
     return statusText.replace(/ /g, '_').toLowerCase();
   }
 
-  public handleException<T>(err: AxiosError): IMailWizzResponse<T> {
+  public handleException(err: AxiosError): IMailWizzEmptyResponse {
     if (err.isAxiosError) {
       return {
         status: this.formatStatus(err.response?.statusText),
