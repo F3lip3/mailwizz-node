@@ -53,20 +53,33 @@ describe('Subscribers', () => {
       const result = await subscribers.all(listId, 1, 50);
 
       expect(result).toHaveProperty('status');
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
     });
   });
 
-  describe('create', () => {
+  describe.only('create', () => {
     it('should be able to add subscriber to a list', async () => {
-      const result = await subscribers.create(listId, {
-        email: 'felipe+subscriber01@leadlovers.com',
-        fname: 'Felipe Humberto',
-        lname: 'Teixeira'
-      });
+      const result = await subscribers.add(listId, [
+        {
+          email: 'felipe+subscriber01@leadlovers.com',
+          fname: 'Felipe Humberto',
+          lname: 'Teixeira'
+        },
+        {
+          email: 'felipe+subscriber02@leadlovers.com',
+          fname: 'Felipe Humberto',
+          lname: 'Teixeira'
+        },
+        {
+          email: 'felipe+subscriber03@leadlovers.com',
+          fname: 'Felipe Humberto',
+          lname: 'Teixeira'
+        }
+      ]);
 
       expect(result).toHaveProperty('status');
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
+      expect(Number(result.data?.count)).toBe(3);
     });
   });
 });

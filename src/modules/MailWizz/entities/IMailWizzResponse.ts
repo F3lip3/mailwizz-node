@@ -1,8 +1,6 @@
-import IMailWizzGenericError from './IMailWizzGenericError';
+import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
 
-export default interface IMailWizzResponse<T> {
-  status: string;
-  error?: string | IMailWizzGenericError;
+export default interface IMailWizzResponse<T> extends IMailWizzEmptyResponse {
   data?: {
     count?: string;
     total_pages?: number;

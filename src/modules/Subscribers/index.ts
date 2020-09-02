@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
 import IRequest from '@modules/Request/models/IRequest';
 
@@ -9,6 +10,39 @@ import ISubscribers from './models/ISubscribers';
 
 export default class Subscribers implements ISubscribers {
   constructor(private client: IRequest) {}
+
+  public async add(
+    list_id: string,
+    data: Array<ICreateSubscriberDTO>
+  ): Promise<IMailWizzResponse<ICreateSubscriberResponseDTO>> {
+    try {
+      const result = await Promise.all(
+        data.map(subscriber =>
+          this.client.post<IMailWizzResponse<ICreateSubscriberResponseDTO>>(
+            `lists/${list_id}/subscribers`,
+            {
+              EMAIL: subscriber.email,
+              FNAME: subscriber.fname,
+              LNAME: subscriber.lname
+            }
+          )
+        )
+      );
+
+      return {
+        status: 200,
+        statusText: 'success',
+        data: {
+          count: result.length.toString(),
+          records: result.map(
+            item => item.data?.record
+          ) as ICreateSubscriberResponseDTO[]
+        }
+      };
+    } catch (err) {
+      return errorHandler.handleException(err);
+    }
+  }
 
   public async all(
     list_id: string,
@@ -26,26 +60,6 @@ export default class Subscribers implements ISubscribers {
       return subscribers;
     } catch (err) {
       console.error(err);
-      return errorHandler.handleException(err);
-    }
-  }
-
-  public async create(
-    list_id: string,
-    data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ICreateSubscriberResponseDTO>> {
-    try {
-      console.info('adding subscriber with data:', data);
-      const result = await this.client.post<
-        IMailWizzResponse<ICreateSubscriberResponseDTO>
-      >(`lists/${list_id}/subscribers`, {
-        EMAIL: data.email,
-        FNAME: data.fname,
-        LNAME: data.lname
-      });
-
-      return result;
-    } catch (err) {
       return errorHandler.handleException(err);
     }
   }

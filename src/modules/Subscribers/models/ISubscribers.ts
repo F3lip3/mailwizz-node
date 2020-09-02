@@ -5,14 +5,14 @@ import ICreateSubscriberResponseDTO from '../dtos/ICreateSubscriberResponseDTO';
 import ISubscriber from '../entities/ISubscriber';
 
 export default interface ISubscribers {
+  add(
+    list_id: string,
+    data: Array<ICreateSubscriberDTO>
+  ): Promise<IMailWizzResponse<ICreateSubscriberResponseDTO>>;
+
   all(
     list_id: string,
     page?: number,
     per_page?: number
   ): Promise<IMailWizzResponse<ISubscriber>>;
-
-  create(
-    list_id: string,
-    data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ICreateSubscriberResponseDTO>>;
 }

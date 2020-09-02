@@ -10,11 +10,17 @@ class ErrorHandler {
   public handleException(err: AxiosError): IMailWizzEmptyResponse {
     if (err.isAxiosError) {
       return {
-        status: this.formatStatus(err.response?.statusText),
+        status: Number(err.response?.status ?? 0),
+        statusText: this.formatStatus(err.response?.statusText),
         error: err.response?.data?.error ?? 'undefined'
       };
     }
-    return { status: 'error', error: err.message };
+
+    return {
+      status: 500,
+      statusText: 'internal_server_error',
+      error: err.message
+    };
   }
 }
 

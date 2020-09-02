@@ -43,7 +43,7 @@ describe('Lists', () => {
       const result = await lists.all();
 
       expect(result).toHaveProperty('status');
-      expect(result.status).toBe('success');
+      expect(result.status).toBe(200);
     });
   });
 
@@ -65,7 +65,7 @@ describe('Lists', () => {
       const deleteResult = await lists.delete(createResult.list_uid ?? '');
 
       expect(deleteResult).toHaveProperty('status');
-      expect(deleteResult.status).toBe('success');
+      expect(deleteResult.statusText).toBe('success');
     });
   });
 
@@ -85,7 +85,7 @@ describe('Lists', () => {
       const result = await lists.get('teste');
 
       expect(result).toHaveProperty('status');
-      expect(result.status).toBe('not_found');
+      expect(result.status).toBe(404);
     });
   });
 });
