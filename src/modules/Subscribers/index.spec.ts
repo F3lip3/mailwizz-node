@@ -1,7 +1,6 @@
 import Lists from '@modules/Lists';
 import Request from '@modules/Request';
 import Subscribers from '@modules/Subscribers';
-// import sleep from '@utils/sleep';
 
 let listId: string;
 let lists: Lists;
@@ -51,23 +50,23 @@ describe('Subscribers', () => {
 
   describe('list all', () => {
     it('should be able to list all subscribers of a list', async () => {
-      const result = await subscribers.all(listId);
+      const result = await subscribers.all(listId, 1, 50);
 
       expect(result).toHaveProperty('status');
       expect(result.status).toBe('success');
     });
   });
 
-  // describe('create', () => {
-  //   it('should be able to add subscriber to a list', async () => {
-  //     const result = await subscribers.create(listId, {
-  //       email: 'felipe+subscriber01@leadlovers.com',
-  //       fname: 'Felipe Humberto',
-  //       lname: 'Teixeira'
-  //     });
+  describe('create', () => {
+    it('should be able to add subscriber to a list', async () => {
+      const result = await subscribers.create(listId, {
+        email: 'felipe+subscriber01@leadlovers.com',
+        fname: 'Felipe Humberto',
+        lname: 'Teixeira'
+      });
 
-  //     expect(result).toHaveProperty('status');
-  //     expect(result.status).toBe('success');
-  //   });
-  // });
+      expect(result).toHaveProperty('status');
+      expect(result.status).toBe('success');
+    });
+  });
 });

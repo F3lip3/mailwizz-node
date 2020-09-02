@@ -75,6 +75,8 @@ describe('Lists', () => {
       const listId = createResult.list_uid ?? '';
       const result = await lists.get(listId);
 
+      await lists.delete(listId);
+
       expect(result).toHaveProperty('status');
       expect(result.data).toHaveProperty('record');
     });

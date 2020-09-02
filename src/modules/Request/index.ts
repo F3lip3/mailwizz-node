@@ -22,6 +22,8 @@ export default class Request implements IRequest {
 
   private method: MailWizzMethod;
 
+  private params: any;
+
   private url: string;
 
   constructor(private config: IConfig) {
@@ -37,13 +39,14 @@ export default class Request implements IRequest {
     });
   }
 
-  public async get<T>(url: string): Promise<T> {
+  public async get<T>(url: string, params?: any): Promise<T> {
     this.method = 'GET';
     this.data = {};
+    this.params = params;
     this.url = url;
 
     const headers = { 'X-MW-SIGNATURE': this.signIn() };
-    const response = await this.client.get<T>(url, { headers });
+    const response = await this.client.get<T>(url, { headers, params });
 
     return response.data;
   }
@@ -51,6 +54,7 @@ export default class Request implements IRequest {
   public async delete<T>(url: string): Promise<T> {
     this.method = 'DELETE';
     this.data = {};
+    this.params = {};
     this.url = url;
 
     const headers = {
@@ -66,6 +70,7 @@ export default class Request implements IRequest {
   public async post<T>(url: string, data?: any): Promise<T> {
     this.method = 'POST';
     this.data = data;
+    this.params = {};
     this.url = url;
 
     const headers = {
@@ -82,6 +87,7 @@ export default class Request implements IRequest {
   public async put<T>(url: string, data?: any): Promise<T> {
     this.method = 'PUT';
     this.data = data;
+    this.params = {};
     this.url = url;
 
     const headers = {
@@ -99,9 +105,12 @@ export default class Request implements IRequest {
   private signIn(): string {
     const fullUrl = `${this.config.baseUrl}/${this.url}`;
     const separator = fullUrl.includes('?') ? '&' : '?';
-    const params = encrypt.ksort({ ...this.defaultHeaders, ...this.data });
+    const params = encrypt.ksort({
+      ...this.defaultHeaders,
+      ...this.data
+    });
 
-    const serializedParams = encrypt.serialize(params);
+    const serializedParams = encrypt.serialize({ ...this.params, ...params });
     const signature = `${this.method} ${fullUrl}${separator}${serializedParams}`;
     const hash = encrypt.hexEncode(this.config.secret, signature);
 

@@ -11,9 +11,17 @@ import ILists from './models/ILists';
 export default class Lists implements ILists {
   constructor(private client: IRequest) {}
 
-  public async all(): Promise<IMailWizzResponse<IList>> {
-    const lists = await this.client.get<IMailWizzResponse<IList>>('lists');
-    return lists;
+  public async all(page = 1, per_page = 10): Promise<IMailWizzResponse<IList>> {
+    try {
+      const lists = await this.client.get<IMailWizzResponse<IList>>('lists', {
+        page,
+        per_page
+      });
+
+      return lists;
+    } catch (err) {
+      return errorHandler.handleException(err);
+    }
   }
 
   public async create(data: ICreateListDTO): Promise<ICreateListResponseDTO> {
@@ -29,10 +37,10 @@ export default class Lists implements ILists {
     }
   }
 
-  public async delete(listId: string): Promise<IMailWizzEmptyResponse> {
+  public async delete(list_id: string): Promise<IMailWizzEmptyResponse> {
     try {
       const result = await this.client.delete<IMailWizzEmptyResponse>(
-        `lists/${listId}`
+        `lists/${list_id}`
       );
       return result;
     } catch (err) {
@@ -40,10 +48,10 @@ export default class Lists implements ILists {
     }
   }
 
-  public async get(listId: string): Promise<IMailWizzResponse<IList>> {
+  public async get(list_id: string): Promise<IMailWizzResponse<IList>> {
     try {
       const list = await this.client.get<IMailWizzResponse<IList>>(
-        `lists/${listId}`
+        `lists/${list_id}`
       );
 
       return list;

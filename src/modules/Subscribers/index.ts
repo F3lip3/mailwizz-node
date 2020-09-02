@@ -10,10 +10,18 @@ import ISubscribers from './models/ISubscribers';
 export default class Subscribers implements ISubscribers {
   constructor(private client: IRequest) {}
 
-  public async all(listId: string): Promise<IMailWizzResponse<ISubscriber>> {
+  public async all(
+    list_id: string,
+    page = 1,
+    per_page = 10
+  ): Promise<IMailWizzResponse<ISubscriber>> {
     try {
       const subscribers = await this.client.get<IMailWizzResponse<ISubscriber>>(
-        `lists/${listId}/subscribers`
+        `lists/${list_id}/subscribers`,
+        {
+          page,
+          per_page
+        }
       );
       return subscribers;
     } catch (err) {
@@ -23,14 +31,18 @@ export default class Subscribers implements ISubscribers {
   }
 
   public async create(
-    listId: string,
+    list_id: string,
     data: ICreateSubscriberDTO
-  ): Promise<ICreateSubscriberResponseDTO> {
+  ): Promise<IMailWizzResponse<ICreateSubscriberResponseDTO>> {
     try {
-      const result = await this.client.post<ICreateSubscriberResponseDTO>(
-        `lists/${listId}/subscribers`,
-        data
-      );
+      console.info('adding subscriber with data:', data);
+      const result = await this.client.post<
+        IMailWizzResponse<ICreateSubscriberResponseDTO>
+      >(`lists/${list_id}/subscribers`, {
+        EMAIL: data.email,
+        FNAME: data.fname,
+        LNAME: data.lname
+      });
 
       return result;
     } catch (err) {
