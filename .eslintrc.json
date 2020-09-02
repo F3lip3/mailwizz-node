@@ -63,7 +63,7 @@
     "no-console": [
       "error",
       {
-        "allow": ["error", "info", "time"]
+        "allow": ["error", "info", "time", "timeEnd"]
       }
     ],
     "no-useless-constructor": "off",

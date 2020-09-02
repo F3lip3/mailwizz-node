@@ -1,8 +1,32 @@
 import Lists from '@modules/Lists';
+import ICreateListDTO from '@modules/Lists/dtos/ICreatListDTO';
 import Request from '@modules/Request';
 
 let lists: Lists;
-let listToDelete: string;
+
+const sampleList = {
+  general: {
+    name: 'Teste 01',
+    description: 'Teste 01 do Felipe',
+    opt_in: 'single'
+  },
+  defaults: {
+    from_name: 'Felipe',
+    from_email: 'felipe@dinfo.com.br',
+    reply_to: 'felipe@dinfo.com.br'
+  },
+  company: {
+    name: 'LeadLovers Tecnologia',
+    country: 'Brazil',
+    zone: 'Paraná',
+    address_1: 'Rua do Semeador, 461',
+    city: 'Curitiba',
+    zone_name: 'CIC',
+    zip_code: '81270-050',
+    phone: '+55 41 3542 1340',
+    website: 'https://leadlovers.com'
+  }
+} as ICreateListDTO;
 
 describe('Lists', () => {
   beforeEach(() => {
@@ -25,52 +49,31 @@ describe('Lists', () => {
 
   describe('create', () => {
     it('should be able to create a list', async () => {
-      const result = await lists.create({
-        general: {
-          name: 'Teste 01',
-          description: 'Teste 01 do Felipe',
-          opt_in: 'single'
-        },
-        defaults: {
-          from_name: 'Felipe',
-          from_email: 'felipe@dinfo.com.br',
-          reply_to: 'felipe@dinfo.com.br'
-        },
-        company: {
-          name: 'LeadLovers Tecnologia',
-          country: 'Brazil',
-          zone: 'Paraná',
-          address_1: 'Rua do Semeador, 461',
-          city: 'Curitiba',
-          zone_name: 'CIC',
-          zip_code: '81270-050',
-          phone: '+55 41 3542 1340',
-          website: 'https://leadlovers.com'
-        }
-      });
+      const createResult = await lists.create(sampleList);
 
-      listToDelete = result.list_uid ?? '';
+      await lists.delete(createResult.list_uid ?? '');
 
-      expect(result).toHaveProperty('status');
-      expect(result).toHaveProperty('list_uid');
-      expect(result.status).toBe('success');
+      expect(createResult).toHaveProperty('status');
+      expect(createResult).toHaveProperty('list_uid');
+      expect(createResult.status).toBe('success');
     });
   });
 
   describe('delete', () => {
     it('should be able to delete a list', async () => {
-      if (listToDelete) {
-        const result = await lists.delete(listToDelete);
+      const createResult = await lists.create(sampleList);
+      const deleteResult = await lists.delete(createResult.list_uid ?? '');
 
-        expect(result).toHaveProperty('status');
-        expect(result.status).toBe('success');
-      }
+      expect(deleteResult).toHaveProperty('status');
+      expect(deleteResult.status).toBe('success');
     });
   });
 
   describe('get', () => {
     it('should be able to get a list by id', async () => {
-      const result = await lists.get('pa828dzfp9f0f');
+      const createResult = await lists.create(sampleList);
+      const listId = createResult.list_uid ?? '';
+      const result = await lists.get(listId);
 
       expect(result).toHaveProperty('status');
       expect(result.data).toHaveProperty('record');

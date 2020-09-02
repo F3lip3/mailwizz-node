@@ -39,6 +39,7 @@ export default class Request implements IRequest {
 
   public async get<T>(url: string): Promise<T> {
     this.method = 'GET';
+    this.data = {};
     this.url = url;
 
     const headers = { 'X-MW-SIGNATURE': this.signIn() };
@@ -49,6 +50,7 @@ export default class Request implements IRequest {
 
   public async delete<T>(url: string): Promise<T> {
     this.method = 'DELETE';
+    this.data = {};
     this.url = url;
 
     const headers = {
@@ -103,7 +105,7 @@ export default class Request implements IRequest {
     const signature = `${this.method} ${fullUrl}${separator}${serializedParams}`;
     const hash = encrypt.hexEncode(this.config.secret, signature);
 
-    // console.info('sign in signature:', signature);
+    // console.info('-> sign in signature:', signature);
 
     return hash;
   }
