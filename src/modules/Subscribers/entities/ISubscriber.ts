@@ -1,11 +1,16 @@
 export default interface ISubscriber {
-  subscriber_id: string;
+  subscriber_uid: string;
   email: string;
   fname: string;
   lname: string;
-  age: string;
   status: string;
   source: string;
   ip_address: string;
-  date_added: Date;
 }
+
+export type ISubscriberCreateResult = Omit<
+  ISubscriber,
+  'fname' | 'lname' | 'status'
+> & {
+  date_added: Date;
+};

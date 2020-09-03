@@ -1,8 +1,11 @@
-import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
-import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
+import {
+  IMailWizzEmptyResponse,
+  IMailWizzResponse,
+  IMailWizzSingleResponse
+} from '@modules/MailWizz/entities/IMailWizzResponse';
 
 import ICreateSubscriberDTO from '../dtos/ICreateSubscriberDTO';
-import ISubscriber from '../entities/ISubscriber';
+import ISubscriber, { ISubscriberCreateResult } from '../entities/ISubscriber';
 
 export default interface ISubscribers {
   all(
@@ -14,12 +17,12 @@ export default interface ISubscribers {
   bulk(
     list_id: string,
     data: Array<ICreateSubscriberDTO>
-  ): Promise<IMailWizzResponse<ISubscriber>>;
+  ): Promise<IMailWizzResponse<ISubscriberCreateResult>>;
 
   create(
     list_id: string,
     data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ISubscriber>>;
+  ): Promise<IMailWizzSingleResponse<ISubscriberCreateResult>>;
 
   delete(
     list_id: string,
@@ -34,12 +37,12 @@ export default interface ISubscribers {
   get(
     list_id: string,
     subscriber_id: string
-  ): Promise<IMailWizzResponse<ISubscriber>>;
+  ): Promise<IMailWizzSingleResponse<ISubscriber>>;
 
   getByEmail(
     list_id: string,
     email: string
-  ): Promise<IMailWizzResponse<ISubscriber>>;
+  ): Promise<IMailWizzSingleResponse<ISubscriber>>;
 
   unsubscribe(
     list_id: string,
@@ -55,13 +58,13 @@ export default interface ISubscribers {
     list_id: string,
     subscriber_id: string,
     data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ISubscriber>>;
+  ): Promise<IMailWizzSingleResponse<ISubscriber>>;
 
   updateByEmail(
     list_id: string,
     email: string,
     data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ISubscriber>>;
+  ): Promise<IMailWizzSingleResponse<ISubscriber>>;
 
   upsert(
     list_id: string,

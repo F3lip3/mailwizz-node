@@ -1,25 +1,40 @@
 import { AxiosError } from 'axios';
-import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
+import {
+  IMailWizzEmptyResponse,
+  IMailWizzResponse,
+  IMailWizzSingleResponse
+} from '@modules/MailWizz/entities/IMailWizzResponse';
 
 class ErrorHandler {
-  private formatStatus(statusText: string | undefined): string {
-    if (!statusText) return '';
-    return statusText.replace(/ /g, '_').toLowerCase();
+  public handleException(err: AxiosError): IMailWizzEmptyResponse {
+    return {
+      status: Number(err.response?.status ?? 500),
+      statusText: err.response?.statusText ?? 'Internal Server Error',
+      error: err.response?.data?.error ?? err.message
+    };
   }
 
-  public handleException(err: AxiosError): IMailWizzEmptyResponse {
-    if (err.isAxiosError) {
-      return {
-        status: Number(err.response?.status ?? 0),
-        statusText: this.formatStatus(err.response?.statusText),
-        error: err.response?.data?.error ?? 'undefined'
-      };
-    }
-
+  public handleGenericException<T>(err: AxiosError): IMailWizzResponse<T> {
     return {
-      status: 500,
-      statusText: 'internal_server_error',
-      error: err.message
+      status: Number(err.response?.status ?? 500),
+      statusText: err.response?.statusText ?? 'Internal Server Error',
+      error: err.response?.data?.error ?? err.message,
+      data: {
+        records: []
+      }
+    };
+  }
+
+  public handleGenericExceptionSingle<T>(
+    err: AxiosError
+  ): IMailWizzSingleResponse<T> {
+    return {
+      status: Number(err.response?.status ?? 500),
+      statusText: err.response?.statusText ?? 'Internal Server Error',
+      error: err.response?.data?.error ?? err.message,
+      data: {
+        record: {} as T
+      }
     };
   }
 }

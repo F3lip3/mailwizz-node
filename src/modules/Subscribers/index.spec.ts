@@ -41,7 +41,7 @@ describe('Subscribers', () => {
       }
     });
 
-    listId = listSample.data?.record?.list_uid ?? '';
+    listId = listSample.data.record.list_uid;
   });
 
   afterAll(async () => {
@@ -79,7 +79,47 @@ describe('Subscribers', () => {
 
       expect(result).toHaveProperty('status');
       expect(result.status).toBe(200);
-      expect(Number(result.data?.count)).toBe(3);
+      expect(Number(result.data.count)).toBe(3);
+    });
+  });
+
+  describe('delete', () => {
+    it('should be able to delete a subscriber', async () => {
+      const createResult = await subscribers.create(listId, {
+        email: 'felipe+subscriber00@leadlovers.com',
+        fname: 'Felipe Humberto',
+        lname: 'Teixeira'
+      });
+
+      console.info('CREATE RESULT:', createResult);
+
+      const deleteResult = await subscribers.delete(
+        listId,
+        createResult.data.record.subscriber_uid
+      );
+
+      expect(deleteResult).toHaveProperty('status');
+      expect(deleteResult.status).toBe(200);
+    });
+  });
+
+  describe.only('get', () => {
+    it('should be able to get a subscriber by uid', async () => {
+      const createResult = await subscribers.create(listId, {
+        email: 'felipe+subscriber00@leadlovers.com',
+        fname: 'Felipe Humberto',
+        lname: 'Teixeira'
+      });
+
+      const getResult = await subscribers.get(
+        listId,
+        createResult.data.record.subscriber_uid
+      );
+
+      console.info('GET RESULT', getResult.data.record);
+
+      expect(getResult).toHaveProperty('status');
+      expect(getResult.status).toBe(200);
     });
   });
 });

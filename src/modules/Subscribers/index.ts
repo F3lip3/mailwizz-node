@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
-import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
+import {
+  IMailWizzEmptyResponse,
+  IMailWizzResponse,
+  IMailWizzSingleResponse
+} from '@modules/MailWizz/entities/IMailWizzResponse';
 import IRequest from '@modules/Request/models/IRequest';
 import errorHandler from '@utils/errorHandler';
 
 import ICreateSubscriberDTO from './dtos/ICreateSubscriberDTO';
-import ISubscriber from './entities/ISubscriber';
+import ISubscriber, { ISubscriberCreateResult } from './entities/ISubscriber';
 import ISubscribers from './models/ISubscribers';
 
 export default class Subscribers implements ISubscribers {
@@ -25,17 +28,17 @@ export default class Subscribers implements ISubscribers {
         }
       );
 
-      return result;
+      return result as IMailWizzResponse<ISubscriber>;
     } catch (err) {
       console.error(err);
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericException<ISubscriber>(err);
     }
   }
 
   public async bulk(
     list_id: string,
     data: Array<ICreateSubscriberDTO>
-  ): Promise<IMailWizzResponse<ISubscriber>> {
+  ): Promise<IMailWizzResponse<ISubscriberCreateResult>> {
     try {
       const result = await Promise.all(
         data.map(subscriber => this.create(list_id, subscriber))
@@ -46,20 +49,22 @@ export default class Subscribers implements ISubscribers {
         statusText: 'success',
         data: {
           count: result.length.toString(),
-          records: result.map(item => item.data?.record) as ISubscriber[]
+          records: result.map(
+            item => item.data?.record
+          ) as ISubscriberCreateResult[]
         }
       };
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericException<ISubscriberCreateResult>(err);
     }
   }
 
   public async create(
     list_id: string,
     data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ISubscriber>> {
+  ): Promise<IMailWizzSingleResponse<ISubscriberCreateResult>> {
     try {
-      const result = await this.client.post<ISubscriber>(
+      const result = await this.client.post<ISubscriberCreateResult>(
         `lists/${list_id}/subscribers`,
         {
           EMAIL: data.email,
@@ -68,9 +73,11 @@ export default class Subscribers implements ISubscribers {
         }
       );
 
-      return result;
+      return result as IMailWizzSingleResponse<ISubscriberCreateResult>;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<ISubscriberCreateResult>(
+        err
+      );
     }
   }
 
@@ -101,7 +108,7 @@ export default class Subscribers implements ISubscribers {
 
       const result = await this.delete(
         list_id,
-        subscriber.data?.record?.subscriber_id ?? ''
+        subscriber.data.record.subscriber_uid
       );
 
       return result;
@@ -113,22 +120,22 @@ export default class Subscribers implements ISubscribers {
   public async get(
     list_id: string,
     subscriber_id: string
-  ): Promise<IMailWizzResponse<ISubscriber>> {
+  ): Promise<IMailWizzSingleResponse<ISubscriber>> {
     try {
       const result = await this.client.get<ISubscriber>(
         `lists/${list_id}/subscribers/${subscriber_id}`
       );
 
-      return result;
+      return result as IMailWizzSingleResponse<ISubscriber>;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<ISubscriber>(err);
     }
   }
 
   public async getByEmail(
     list_id: string,
     email: string
-  ): Promise<IMailWizzResponse<ISubscriber>> {
+  ): Promise<IMailWizzSingleResponse<ISubscriber>> {
     try {
       const result = await this.client.get<ISubscriber>(
         `lists/${list_id}/subscribers/search-by-email`,
@@ -137,9 +144,9 @@ export default class Subscribers implements ISubscribers {
         }
       );
 
-      return result;
+      return result as IMailWizzSingleResponse<ISubscriber>;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<ISubscriber>(err);
     }
   }
 
@@ -170,7 +177,7 @@ export default class Subscribers implements ISubscribers {
 
       const result = await this.unsubscribe(
         list_id,
-        subscriber.data?.record?.subscriber_id ?? ''
+        subscriber.data.record.subscriber_uid
       );
 
       return result;
@@ -183,16 +190,16 @@ export default class Subscribers implements ISubscribers {
     list_id: string,
     subscriber_id: string,
     data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ISubscriber>> {
+  ): Promise<IMailWizzSingleResponse<ISubscriber>> {
     try {
       const result = await this.client.put<ISubscriber>(
         `lists/${list_id}/subscribers/${subscriber_id}`,
         data
       );
 
-      return result;
+      return result as IMailWizzSingleResponse<ISubscriber>;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<ISubscriber>(err);
     }
   }
 
@@ -200,7 +207,7 @@ export default class Subscribers implements ISubscribers {
     list_id: string,
     email: string,
     data: ICreateSubscriberDTO
-  ): Promise<IMailWizzResponse<ISubscriber>> {
+  ): Promise<IMailWizzSingleResponse<ISubscriber>> {
     try {
       const subscriber = await this.getByEmail(list_id, email);
       if (subscriber?.status !== 200) {
@@ -209,13 +216,13 @@ export default class Subscribers implements ISubscribers {
 
       const result = await this.update(
         list_id,
-        subscriber.data?.record?.subscriber_id ?? '',
+        subscriber.data.record.subscriber_uid,
         data
       );
 
       return result;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<ISubscriber>(err);
     }
   }
 
@@ -234,7 +241,7 @@ export default class Subscribers implements ISubscribers {
           if (existingSubscriber.status === 200)
             return this.update(
               list_id,
-              existingSubscriber.data?.record?.subscriber_id ?? '',
+              existingSubscriber.data.record.subscriber_uid,
               subscriber
             );
 
@@ -251,7 +258,7 @@ export default class Subscribers implements ISubscribers {
         }
       };
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericException<ISubscriber>(err);
     }
   }
 }

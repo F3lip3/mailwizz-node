@@ -1,5 +1,8 @@
-import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
-import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
+import {
+  IMailWizzEmptyResponse,
+  IMailWizzResponse,
+  IMailWizzSingleResponse
+} from '@modules/MailWizz/entities/IMailWizzResponse';
 import IRequest from '@modules/Request/models/IRequest';
 import errorHandler from '@utils/errorHandler';
 
@@ -17,32 +20,34 @@ export default class Lists implements ILists {
         per_page
       });
 
-      return result;
+      return result as IMailWizzResponse<IList>;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericException<IList>(err);
     }
   }
 
   public async create(
     data: ICreateListDTO
-  ): Promise<IMailWizzResponse<Pick<IList, 'list_uid'>>> {
+  ): Promise<IMailWizzSingleResponse<Required<Pick<IList, 'list_uid'>>>> {
     try {
       const result = await this.client.post<IList>('lists', data);
-      const createResult: IMailWizzResponse<IList> & {
+      const createResult: IMailWizzSingleResponse<IList> & {
         list_uid?: string;
-      } = result;
+      } = result as IMailWizzSingleResponse<IList>;
 
       return {
         status: result.status,
         statusText: result.statusText,
         data: {
           record: {
-            list_uid: createResult.list_uid
+            list_uid: createResult.list_uid ?? ''
           }
         }
       };
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<
+        Required<Pick<IList, 'list_uid'>>
+      >(err);
     }
   }
 
@@ -56,13 +61,13 @@ export default class Lists implements ILists {
     }
   }
 
-  public async get(list_id: string): Promise<IMailWizzResponse<IList>> {
+  public async get(list_id: string): Promise<IMailWizzSingleResponse<IList>> {
     try {
       const result = await this.client.get<IList>(`lists/${list_id}`);
 
-      return result;
+      return result as IMailWizzSingleResponse<IList>;
     } catch (err) {
-      return errorHandler.handleException(err);
+      return errorHandler.handleGenericExceptionSingle<IList>(err);
     }
   }
 }
