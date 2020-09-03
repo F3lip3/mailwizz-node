@@ -1,7 +1,10 @@
+import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
+import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default interface IRequest {
-  get<T>(url: string, params?: any): Promise<T>;
-  delete<T>(url: string): Promise<T>;
-  post<T>(url: string, data?: any): Promise<T>;
-  put<T>(url: string, data?: any): Promise<T>;
+  get<T = any, R = IMailWizzResponse<T>>(url: string, params?: any): Promise<R>;
+  delete(url: string): Promise<IMailWizzEmptyResponse>;
+  post<T = any, R = IMailWizzResponse<T>>(url: string, data?: any): Promise<R>;
+  put<T = any, R = IMailWizzResponse<T>>(url: string, data?: any): Promise<R>;
 }

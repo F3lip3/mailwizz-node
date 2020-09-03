@@ -28,4 +28,5 @@ export default interface IList {
     city?: string;
     zip_code?: string;
   };
+  list_uid?: string;
 }

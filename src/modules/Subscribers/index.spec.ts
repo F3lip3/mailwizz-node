@@ -41,7 +41,7 @@ describe('Subscribers', () => {
       }
     });
 
-    listId = listSample.list_uid ?? '';
+    listId = listSample.data?.record?.list_uid ?? '';
   });
 
   afterAll(async () => {
@@ -57,9 +57,9 @@ describe('Subscribers', () => {
     });
   });
 
-  describe.only('create', () => {
-    it('should be able to add subscriber to a list', async () => {
-      const result = await subscribers.add(listId, [
+  describe('create', () => {
+    it('should be able to add a list of subscribers to a list', async () => {
+      const result = await subscribers.bulk(listId, [
         {
           email: 'felipe+subscriber01@leadlovers.com',
           fname: 'Felipe Humberto',

@@ -3,6 +3,8 @@
 import axios, { AxiosInstance } from 'axios';
 
 import IConfig from '@config/mailwizz';
+import IMailWizzEmptyResponse from '@modules/MailWizz/entities/IMailWizzEmptyResponse';
+import IMailWizzResponse from '@modules/MailWizz/entities/IMailWizzResponse';
 import encrypt from '@utils/encrypt';
 
 import IRequest from './models/IRequest';
@@ -39,19 +41,29 @@ export default class Request implements IRequest {
     });
   }
 
-  public async get<T>(url: string, params?: any): Promise<T> {
+  public async get<T = any, R = IMailWizzResponse<T>>(
+    url: string,
+    params?: any
+  ): Promise<R> {
     this.method = 'GET';
     this.data = {};
     this.params = params;
     this.url = url;
 
     const headers = { 'X-MW-SIGNATURE': this.signIn() };
-    const response = await this.client.get<T>(url, { headers, params });
+    const response = await this.client.get<R>(url, {
+      headers,
+      params
+    });
 
-    return response.data;
+    return {
+      ...response.data,
+      status: response.status,
+      statusText: response.statusText
+    };
   }
 
-  public async delete<T>(url: string): Promise<T> {
+  public async delete(url: string): Promise<IMailWizzEmptyResponse> {
     this.method = 'DELETE';
     this.data = {};
     this.params = {};
@@ -62,12 +74,19 @@ export default class Request implements IRequest {
       'X-HTTP-Method-Override': this.method
     };
 
-    const response = await this.client.delete<T>(url, { headers });
+    const response = await this.client.delete(url, { headers });
 
-    return response.data;
+    return {
+      ...response.data,
+      status: response.status,
+      statusText: response.statusText
+    };
   }
 
-  public async post<T>(url: string, data?: any): Promise<T> {
+  public async post<T = any, R = IMailWizzResponse<T>>(
+    url: string,
+    data?: any
+  ): Promise<R> {
     this.method = 'POST';
     this.data = data;
     this.params = {};
@@ -79,12 +98,19 @@ export default class Request implements IRequest {
     };
 
     const encodedData = this.formUrlEncoded(data);
-    const response = await this.client.post<T>(url, encodedData, { headers });
+    const response = await this.client.post<R>(url, encodedData, { headers });
 
-    return response.data;
+    return {
+      ...response.data,
+      status: response.status,
+      statusText: response.statusText
+    };
   }
 
-  public async put<T>(url: string, data?: any): Promise<T> {
+  public async put<T = any, R = IMailWizzResponse<T>>(
+    url: string,
+    data?: any
+  ): Promise<R> {
     this.method = 'PUT';
     this.data = data;
     this.params = {};
@@ -97,9 +123,13 @@ export default class Request implements IRequest {
     };
 
     const encodedData = this.formUrlEncoded(data);
-    const response = await this.client.put<T>(url, encodedData, { headers });
+    const response = await this.client.put<R>(url, encodedData, { headers });
 
-    return response.data;
+    return {
+      ...response.data,
+      status: response.status,
+      statusText: response.statusText
+    };
   }
 
   private signIn(): string {

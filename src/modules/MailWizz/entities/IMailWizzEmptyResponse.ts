@@ -1,7 +1,7 @@
 import IMailWizzGenericError from './IMailWizzGenericError';
 
 export default interface IMailWizzEmptyResponse {
-  status: number;
+  status: number | string;
   statusText: string;
   error?: string | IMailWizzGenericError;
 }

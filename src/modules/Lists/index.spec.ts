@@ -51,28 +51,30 @@ describe('Lists', () => {
     it('should be able to create a list', async () => {
       const createResult = await lists.create(sampleList);
 
-      await lists.delete(createResult.list_uid ?? '');
+      await lists.delete(createResult.data?.record?.list_uid ?? '');
 
       expect(createResult).toHaveProperty('status');
-      expect(createResult).toHaveProperty('list_uid');
-      expect(createResult.status).toBe('success');
+      expect(createResult.data?.record).toHaveProperty('list_uid');
+      expect(createResult.status).toBe(201);
     });
   });
 
   describe('delete', () => {
     it('should be able to delete a list', async () => {
       const createResult = await lists.create(sampleList);
-      const deleteResult = await lists.delete(createResult.list_uid ?? '');
+      const deleteResult = await lists.delete(
+        createResult.data?.record?.list_uid ?? ''
+      );
 
       expect(deleteResult).toHaveProperty('status');
-      expect(deleteResult.statusText).toBe('success');
+      expect(deleteResult.status).toBe(200);
     });
   });
 
   describe('get', () => {
     it('should be able to get a list by id', async () => {
       const createResult = await lists.create(sampleList);
-      const listId = createResult.list_uid ?? '';
+      const listId = createResult.data?.record?.list_uid ?? '';
       const result = await lists.get(listId);
 
       await lists.delete(listId);
