@@ -25,10 +25,10 @@ export default class Lists implements ILists {
 
   public async create(
     data: ICreateListDTO
-  ): Promise<IMailWizzResponse<Partial<IList>>> {
+  ): Promise<IMailWizzResponse<Pick<IList, 'list_uid'>>> {
     try {
-      const result = await this.client.post<Partial<IList>>('lists', data);
-      const createResult: IMailWizzResponse<Partial<IList>> & {
+      const result = await this.client.post<IList>('lists', data);
+      const createResult: IMailWizzResponse<IList> & {
         list_uid?: string;
       } = result;
 
